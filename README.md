@@ -92,7 +92,7 @@ Now, that we have that out of the way here are the changes that you need to appl
    EOF
    ```
 
-1. Create an OpenShift Dev Spaces cluster
+1. Create an OpenShift Dev Spaces cluster that uses the new SCC
 
    ```bash
    cat << EOF | oc apply -f -
@@ -141,3 +141,44 @@ Now, that we have that out of the way here are the changes that you need to appl
      networking: {}   
    EOF
    ```
+
+1. Log into Dev Spaces as a non-admin user and create a new workspace from this git repo:
+
+   `https://github.com/cgruver/ocp-4-17-nested-container-tech-preview.git`
+
+   __Note:__ The container image for this workspace is built from the files in the `./workspace-image` folder of this project.
+
+1. Demonstrate running a container with podman:
+
+   Open a new terminal in the workspace and run -
+
+   ```bash
+   podman run -d --rm --name webserver -p 8080:80 quay.io/libpod/banner
+   curl http://localhost:8080
+   ```
+
+   You should observer the following output:
+
+   ```bash
+   Trying to pull quay.io/libpod/banner:latest...
+   Getting image source signatures
+   Copying blob 64dc81575282 done   | 
+   Copying blob 2408cc74d12b done   | 
+   Copying blob 92ec11331c38 done   | 
+   Copying blob ef4966331ce5 done   | 
+   Copying config 5ba9aec95f done   | 
+   Writing manifest to image destination
+   22fcc41e7fca27f37841aafab535db2dc836d94aa513594f440b5a4824c4bef7
+      ___          __              
+     / _ \___  ___/ /_ _  ___ ____ 
+    / ___/ _ \/ _  /  ' \/ _ `/ _ \
+   /_/   \___/\_,_/_/_/_/\_,_/_//_/
+   ```
+
+1. Stop the running container:
+
+   ```bash
+   podman kill webserver
+   ```
+
+Now, go have fun with podman in OpenShift Dev Spaces...
