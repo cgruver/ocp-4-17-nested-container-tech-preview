@@ -9,12 +9,14 @@ components:
     pod-overrides:
       metadata:
         annotations:
+          # Ask for /dev/fuse and /dev/net/tun to be mapped into this Pod
           io.kubernetes.cri-o.Devices: "/dev/fuse,/dev/net/tun"
       spec:
+        # Instruct the container runtime to create a new user namespace for the containers in this Pod.
         hostUsers: false
     container-overrides: 
       securityContext:
-        procMount:
-          Unmasked
+        # Ask for an unmasked /proc to be available to this container
+        procMount: Unmasked
   container: 
     image: quay.io/cgruver0/che/ocp-4-17-userns-tp:latest
