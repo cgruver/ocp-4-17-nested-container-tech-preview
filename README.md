@@ -4,7 +4,7 @@ This repo implements a minimal OpenShift Dev Spaces workspace that demonstrates 
 
 In order to use this workspace, you need to apply some configuration changes to your OpenShift Cluster.
 
-__Note:__ There are two things that you must take into consideration before proceeding.
+__Note:__ There are three things that you must take into consideration before proceeding.
 
 1. The cluster that you apply these changes to will not be upgradable.  This must be done on a disposable cluster.
 
@@ -77,7 +77,7 @@ Now, that we have that out of the way here are the changes that you need to appl
 1. Install OpenShift Dev Spaces:
 
    ```bash
-   cat << EOF | ${OC} apply -f -
+   cat << EOF | oc apply -f -
    apiVersion: operators.coreos.com/v1alpha1
    kind: Subscription
    metadata:
