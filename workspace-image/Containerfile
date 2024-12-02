@@ -7,19 +7,15 @@ ENV BUILDAH_ISOLATION=chroot
 
 COPY --chown=0:0 entrypoint.sh /
 
-# Note: compat-openssl11 & libbrotli are needed for che-code (Dev Spaces build of VS Code)
-
-RUN microdnf --disableplugin=subscription-manager install -y openssl compat-openssl11 libbrotli git tar shadow-utils bash zsh podman buildah skopeo python3-pip python3-devel aardvark-dns ; \
+RUN microdnf --disableplugin=subscription-manager install -y openssl git tar shadow-utils bash zsh podman buildah skopeo python3-pip python3-devel aardvark-dns ; \
     microdnf update -y ; \
     microdnf clean all ; \
-    mkdir -p ${USER_HOME_DIR} ; \
     mkdir -p ${WORK_DIR} ; \
     chgrp -R 0 /home ; \
     pip3 install podman-compose ; \
     #
     # Setup for root-less podman
     #
-    mkdir -p "${HOME}"/.config/containers ; \
     setcap cap_setuid+ep /usr/bin/newuidmap ; \
     setcap cap_setgid+ep /usr/bin/newgidmap ; \
     touch /etc/subgid /etc/subuid ; \
@@ -28,5 +24,5 @@ RUN microdnf --disableplugin=subscription-manager install -y openssl compat-open
     chmod +x /entrypoint.sh
 
 WORKDIR ${WORK_DIR}
-ENTRYPOINT [ "/entrypoint.sh" ]
+ENTRYPOINT ["/usr/libexec/podman/catatonit","--","/entrypoint.sh"]
 CMD [ "tail", "-f", "/dev/null" ]

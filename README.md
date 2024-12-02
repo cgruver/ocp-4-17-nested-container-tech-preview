@@ -16,6 +16,25 @@ Now, that we have that out of the way here are the changes that you need to appl
 
 1. Enable `crun` as the default container runtime on the cluster compute nodes.
 
+   For a cluster with both control-plane ("master"), and compute ("worker") nodes, apply the following MachineConfig to enable `crun` as the default container runtime on the compute nodes.
+
+   ```bash
+   cat << EOF | oc apply -f -
+   apiVersion: machineconfiguration.openshift.io/v1
+   kind: ContainerRuntimeConfig
+   metadata:
+     name: enable-crun-worker
+   spec:
+     machineConfigPoolSelector:
+       matchLabels:
+         pools.operator.machineconfiguration.openshift.io/worker: ""
+     containerRuntimeConfig:
+       defaultRuntime: crun
+   EOF
+   ```
+
+   For a Single Node cluster, or if you want to enable usernamespaces support on the control-plane too, then apply the following MachineConfig to enable `crun` as the default container runtime on the control-plane nodes.
+
    ```bash
    cat << EOF | oc apply -f -
    apiVersion: machineconfiguration.openshift.io/v1
@@ -25,7 +44,7 @@ Now, that we have that out of the way here are the changes that you need to appl
    spec:
      machineConfigPoolSelector:
        matchLabels:
-         pools.operator.machineconfiguration.openshift.io/worker: ""
+         pools.operator.machineconfiguration.openshift.io/master: ""
      containerRuntimeConfig:
        defaultRuntime: crun
    EOF
